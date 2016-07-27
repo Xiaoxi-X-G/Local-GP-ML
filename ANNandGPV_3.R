@@ -9,7 +9,8 @@ library(forecast)
 library(nnet)
 library(caret)
 library(MASS)
-RScriptPath<-"C://Users/ptech3/Dropbox/Ploytech/Regression/machineLearning/gp/GaussianProcess"
+RScriptPath<-"C://Users/ptech3/Dropbox/Ploytech/Regression/machineLearning/gp/GaussianProcess_AzureML/GP_ML"
+
 
 source(paste(RScriptPath, "/DataHoursV2.R", sep=""))
 source(paste(RScriptPath, "/OpenCloseDayTime.R", sep=""))
