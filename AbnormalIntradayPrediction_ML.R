@@ -1,4 +1,4 @@
-AbnormalIntradayPrediction <-function(HistoryAndPredictHourlyInfo_updated, HistoryAndPredictInfo, PredictInfor){
+AbnormalIntradayPrediction_ML <-function(HistoryAndPredictHourlyInfo_updated, HistoryAndPredictInfo, PredictInfor){
   # HistoryAndPredictHourlyInfo_updated = data.frame(Time, Items)
   # HistoryAndPredictInfo = data.frame(Dates, Items, DayofWeek, OpenFrom, OpenTo, SD.Type, PD.Type, Outlier)
   # PredictInfor = data.frame(Dates, Items, DayofWeek, OpenFrom, OpenTo, SD.Type, PD.Type, Outlier)
@@ -14,15 +14,13 @@ AbnormalIntradayPrediction <-function(HistoryAndPredictHourlyInfo_updated, Histo
   ### II: One-step-ahead Special day prediction 
   ###############################################################################################################
   
-  source(paste(RScriptPath, "/ExponentialCoeff.R", sep=""))
-  
+
   
   
   ###  I: One-step-ahead Proximity day prediction 
   PDInd <-c()
   PDInd <- which(!is.na(PredictInfor$PD.Type))
-  
-  if (length(PDInd) > 0){
+  if (length(PDInd) >0 ){
     for (i in 1:length(PDInd)){
       ###     I.1: Find history proximity data, if no record, use paste two weeks information
       HistoryPD <- tryCatch(
@@ -51,15 +49,15 @@ AbnormalIntradayPrediction <-function(HistoryAndPredictHourlyInfo_updated, Histo
       HistoryAndPredictHourlyInfo_updated$Items[sort(which(format(HistoryAndPredictHourlyInfo_updated$Time, "%Y-%m-%d")==as.character(PredictInfor$Dates[PDInd[i]])))]<-
         PredictInfor$Items[PDInd[i]]*Coeff
     }
-  }  
-    
-    
-    
-    ### II: One-step-ahead Special day prediction 
-    SDInd <-c()
-    SDInd <- which(!is.na(PredictInfor$SD.Type))
-    
-  if (length(SDInd)>0){
+  }
+  
+  
+  
+  ### II: One-step-ahead Special day prediction 
+  SDInd <-c()
+  SDInd <- which(!is.na(PredictInfor$SD.Type))
+
+  if (length(SDInd) >0 ){
     for (i in 1:length(SDInd)){
       ###    II.1: Find history proximity data, if no record, use paste two weeks information
       HistorySD <- tryCatch(
@@ -81,6 +79,8 @@ AbnormalIntradayPrediction <-function(HistoryAndPredictHourlyInfo_updated, Histo
         if (sum(HourlyData.temp)==0){next} 
         HistorySD.HourData[j,] <- HourlyData.temp/sum(HourlyData.temp)
       }
+      
+      
       ###     II.3: Exponianl smoothing is used to predict
       Coeff <- (ExponentialCoeff(length(HistorySD), 0.40) %*% HistorySD.HourData)/sum(ExponentialCoeff(length(HistorySD), 0.40) %*% HistorySD.HourData)
       Coeff[! is.finite(Coeff)] <-0
@@ -88,6 +88,8 @@ AbnormalIntradayPrediction <-function(HistoryAndPredictHourlyInfo_updated, Histo
         PredictInfor$Items[SDInd[i]]* Coeff
     }
   }
+  
+
   
   return(HistoryAndPredictHourlyInfo_updated)
 }

@@ -1,4 +1,4 @@
-NormalIntradayPrediction <- function(HistoryAndPredictHourlyInfo, HistoryAndPredictInfo, PredictInfor){
+NormalIntradayPrediction_ML <- function(HistoryAndPredictHourlyInfo, HistoryAndPredictInfo, PredictInfor){
   # HistoryAndPredictHourlyInfo = data.frame(Time, Items)
   # HistoryAndPredictInfo = data.frame(Dates, Items, DayofWeek, OpenFrom, OpenTo, SD.Type, PD.Type, Outlier)
   # PredictInfor = data.frame(Dates, Items, DayofWeek, OpenFrom, OpenTo, SD.Type, PD.Type, Outlier)
@@ -13,7 +13,7 @@ NormalIntradayPrediction <- function(HistoryAndPredictHourlyInfo, HistoryAndPred
   ###  V: Moving to next prediction index until finishes
   ###############################################################################################################
   
-  source(paste(RScriptPath, "/ExponentialCoeff.R", sep=""))
+  #source(paste(RScriptPath, "/ExponentialCoeff.R", sep=""))
 
   
   
@@ -32,6 +32,11 @@ NormalIntradayPrediction <- function(HistoryAndPredictHourlyInfo, HistoryAndPred
                     n = 4)
         if (length(temp)==0){stop("No 100% matched history")}
         UpdatedSameNormalDayInd <- temp
+        },
+        warning = function(w){
+          UpdatedSameNormalDayInd<-tail(which((NormalHistoryAndPredictInfo$DayofWeek[1: (which(NormalHistoryAndPredictInfo$Dates== PredictInfor$Dates[NormalPredictionDayInd[i]])-1)] == PredictInfor$DayofWeek[NormalPredictionDayInd[i]])),
+                                        n = 4)
+          return(UpdatedSameNormalDayInd)
         },
         error = function(err){ # release constraint if no history
           UpdatedSameNormalDayInd<-tail(which((NormalHistoryAndPredictInfo$DayofWeek[1: (which(NormalHistoryAndPredictInfo$Dates== PredictInfor$Dates[NormalPredictionDayInd[i]])-1)] == PredictInfor$DayofWeek[NormalPredictionDayInd[i]])),
@@ -56,6 +61,8 @@ NormalIntradayPrediction <- function(HistoryAndPredictHourlyInfo, HistoryAndPred
         PredictInfor$Items[PredictInfor$Dates==PredictInfor$Dates[NormalPredictionDayInd[i]]]*Coeff
     }
   }
+    
+    
   return(HistoryAndPredictHourlyInfo)
   
 }
