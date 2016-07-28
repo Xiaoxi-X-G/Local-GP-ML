@@ -30,7 +30,6 @@ source(paste(RScriptPath, "/DailyPred_GP.R", sep=""))
 StartDate <- "2015-12-01"
 FinishDate <- "2015-12-31"
 
-
 ############################## Load ExceptionalDatesOpeningHours Data in the same format as AZure ML
 
 ExceptionalDatesOpeningHours <- tryCatch( # catach errors at the inputs: ExceptionalDates and Openinghours
