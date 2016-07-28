@@ -12,6 +12,7 @@ RScriptPath<-"C://Users/ptech3/Dropbox/Ploytech/Regression/machineLearning/gp/Ga
 DataPath <- "C://Users/ptech3/Dropbox/Ploytech/Regression/AzureML/AZureML/AllData"
 
 
+
 source(paste(RScriptPath,"/DataHoursV2_ML.R", sep=""))
 source(paste(RScriptPath,"/ExceptionalDayandEffectFormatV2_ML.R", sep=""))
 source(paste(RScriptPath,"/FindQtrOutliers.R", sep=""))
