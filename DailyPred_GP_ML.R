@@ -1,4 +1,4 @@
-DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, CloseDatesCSV){
+DailyPred_GP_ML<-function(FinishDate.T, StartDate.T, InputData, ExceptionalDayandEffects, CloseDays){
   # FristDate.T, LastDate.T = character
   # ExceptionalDayandEffects = list(ExceptionalDays, ProximityDays)
   #          where ExceptionalDays = data.frame(ExceptionalDate, Annual, ExceptionalDayTypeID)
@@ -200,7 +200,7 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
       
       if (length(Hist.Dates)>0){
         ProximityDayCoeff<-ExponentialCoeff(length(Hist.Dates), 0.65)
-        Daypred$Rev2_BoxCox[Ind[j]]<-sum(ProximityDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_BoxCox[which(CleanedData$Dates %in% Hist.Dates)]))
+        Daypred$Rev2_Boxcox[Ind[j]]<-sum(ProximityDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_BoxCox[which(CleanedData$Dates %in% Hist.Dates)]))
       }
     }
   }
@@ -218,9 +218,10 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
         Dates<-Daypred$Dates[Ind[i]]
         
         # 1: Find history Exceptional days
-        Hist.Dates <-c(Dates %m-% years(1) ) 
+        #Hist.Dates <-c(Dates %m-% years(1) ) 
+        Hist.Dates <- seq(Dates, length=2, by="-1 year")[2]
         while (Hist.Dates[1] > as.Date(FirstDate)){
-          Hist.Dates <- c(Hist.Dates[1] %m-% years(1), Hist.Dates) #Old to New, i.e.[2013, 2014, 2015]
+          Hist.Dates <- c(seq(Hist.Dates[1], length=2, by="-1 year")[2], Hist.Dates) #Old to New, i.e.[2013, 2014, 2015]
         }
         if (Hist.Dates[1] < as.Date(FirstDate)){
           Hist.Dates <-Hist.Dates[2:length(Hist.Dates)]
@@ -236,10 +237,12 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
         ExceptionalDayCoeff<-ExponentialCoeff(length(Hist.Dates), 0.65)
         
         # 3: Replace exceptinal days with history
-        Daypred$Rev2_BoxCox[Ind[i]]<-sum(ExceptionalDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_BoxCox[which(CleanedData$Dates %in% Hist.Dates)]))
+        Daypred$Rev2_Boxcox[Ind[i]]<-sum(ExceptionalDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_Boxcox[which(CleanedData$Dates %in% Hist.Dates)]))
       }
     }
   }
+  
+  
   
   ##########  V: Convert back from BoxCox transformation to original format
   Lambda <- InputData[[1]]
