@@ -103,7 +103,8 @@ PreProcessing_GP_ML <- function(FinishDateT, InputData, ExceptionalDayandEffects
   
   
   ################## IV: Identify. Replace outliers and SpecialDay by mean, not Regular closing days
-  RegularCloseDayofWeek<-read.csv(paste(RScriptPath, RegularCloseDayofWeekCSV, sep=""), header = TRUE)
+  #RegularCloseDayofWeek<-read.csv(paste(RScriptPath, RegularCloseDayofWeekCSV, sep=""), header = TRUE)
+  RegularCloseDayofWeek<-RegularCloseDayofWeekCSV
   
   outliers <- unique(boxplot.stats(OutputData$Values_BoxCox, coef = 1.75)$out)
   OutputData$Outliers <- rep(FALSE, length = as.integer(as.Date(LastDate)-as.Date(FirstDate)+1))
