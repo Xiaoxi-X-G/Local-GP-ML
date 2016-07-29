@@ -19,6 +19,20 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
   
   
   
+  
+  
+  #####################################################################################################
+  ##########  I: Daily prediction using cleaned data
+  ########## II: Scaling: from normalized [0, 1] to Box-Cox format
+  ##########III: Add Exceptional Days and Closing day information
+  ########## IV: Deal with Exceptional days: using annual history or SpecialDayTypeID to groupe data
+  ##########  V: Convert back from BoxCox transformation to original format
+  ########## VI: Deal with CloseDays. Change to 0 if it's a close day; and repalced by mean if it's not but = 0 
+  #####################################################################################################  
+  
+  
+  
+  
   ##########  I: Daily prediction: Predict each day of week individually assuming the input is random and less pattern
   ### I.1: ARIMA for Linear 
   ### I.2: ANN for Nonlinear 
@@ -159,7 +173,7 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
       Daypred$PD.Type[i] <- ProximityDays$ProximityDaysTypeID[PDInd]
     }
     
-    if (as.factor(Daypred$Dates[i]) %in% CloseDays$x){
+    if (as.factor(Daypred$Dates[i]) %in% CloseDays){
       Daypred$CloseDays[i] <- TRUE
     }
   }
@@ -228,7 +242,7 @@ DailyPred_GP_ML<-function(FinishDate.T, InputData, ExceptionalDayandEffects, Clo
   }
   
   ##########  V: Convert back from BoxCox transformation to original format
-  Lambda <- InputData[["lambda"]]
+  Lambda <- InputData[[1]]
   Daypred$Rev2_Orig <- InvBoxCox(Daypred$Rev2_Boxcox,Lambda)
   Daypred$Rev2_Orig[which(Daypred$Rev2_Orig<0)]<-0
   
