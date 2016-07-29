@@ -1,4 +1,4 @@
-PreProcessing_GP_ML <- function(FinishDateT, InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV){
+PreProcessing_GP_ML <- function(InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV){
   # FristDate.T, LastDate.T = character 
   # ExceptionalDayandEffects = list(ExceptionalDays, ProximityDays)
   #          where ExceptionalDays = data.frame(ExceptionalDate, Annual, ExceptionalDayTypeID)

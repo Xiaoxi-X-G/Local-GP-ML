@@ -21,7 +21,7 @@ source(paste(RScriptPath,"/AbnormalIntradayPrediction_ML.R", sep=""))
 source(paste(RScriptPath,"/RegularCloseDayofWeek_MLV2.R", sep=""))
 
 source(paste(RScriptPath, "/BestArimaParam.R", sep=""))
-source(paste(RScriptPath,"/PreProcessing_GP.R", sep=""))
+source(paste(RScriptPath,"/PreProcessing_GP_ML.R", sep=""))
 source(paste(RScriptPath, "/DailyPred_GP.R", sep=""))
 
 
@@ -162,9 +162,9 @@ PredictionResults <- tryCatch( # catch all other errors that may occur
 
         ##############################################################################################################
         ### V: Data Preprocessing
-        XXX <- PreProcessing_GP(FinishDateT, InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV)# FristDate.T, LastDate.T = character 
-        
-        
+        XXX <- PreProcessing_GP_ML(InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV)
+          
+
         
         ##############################################################################################################
         ### VI: Daily prediction
