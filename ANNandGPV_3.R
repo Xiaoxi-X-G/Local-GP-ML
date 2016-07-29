@@ -22,7 +22,7 @@ source(paste(RScriptPath,"/RegularCloseDayofWeek_MLV2.R", sep=""))
 
 source(paste(RScriptPath, "/BestArimaParam.R", sep=""))
 source(paste(RScriptPath,"/PreProcessing_GP_ML.R", sep=""))
-source(paste(RScriptPath, "/DailyPred_GP.R", sep=""))
+source(paste(RScriptPath, "/DailyPred_GP_ML.R", sep=""))
 
 
 
@@ -168,7 +168,7 @@ PredictionResults <- tryCatch( # catch all other errors that may occur
         
         ##############################################################################################################
         ### VI: Daily prediction
-        YYYY <- DailyPred_GP(FinishDateT, XXX, ExceptionalDayandEffects, CloseDays)
+        YYYY <- DailyPred_GP_ML(FinishDateT, StartDateT, XXX, ExceptionalDayandEffects, CloseDays)
 
 
 
