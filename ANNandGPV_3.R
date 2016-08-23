@@ -22,15 +22,14 @@ source(paste(RScriptPath,"/AbnormalIntradayPrediction_ML.R", sep=""))
 source(paste(RScriptPath,"/RegularCloseDayofWeek_MLV2.R", sep=""))
 
 source(paste(RScriptPath, "/BestArimaParam.R", sep=""))
-source(paste(RScriptPath,"/PreProcessing_GP.R", sep=""))
-source(paste(RScriptPath, "/DailyPred_GP.R", sep=""))
+source(paste(RScriptPath,"/PreProcessing_GP_ML.R", sep=""))
+source(paste(RScriptPath, "/DailyPred_GP_ML.R", sep=""))
 
 
 
 
 StartDate <- "2015-12-01"
 FinishDate <- "2015-12-31"
-
 
 ############################## Load ExceptionalDatesOpeningHours Data in the same format as AZure ML
 
@@ -164,13 +163,13 @@ PredictionResults <- tryCatch( # catch all other errors that may occur
 
         ##############################################################################################################
         ### V: Data Preprocessing
-        XXX <- PreProcessing_GP(FinishDateT, InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV)# FristDate.T, LastDate.T = character 
-        
-        
+        XXX <- PreProcessing_GP_ML(InputData, ExceptionalDayandEffects, CloseDays, RegularCloseDayofWeekCSV)
+          
+
         
         ##############################################################################################################
         ### VI: Daily prediction
-        YYYY <- DailyPred_GP(FinishDateT, XXX, ExceptionalDayandEffects, CloseDays)
+        YYYY <- DailyPred_GP_ML(FinishDateT, StartDateT, XXX, ExceptionalDayandEffects, CloseDays)
 
 
 
