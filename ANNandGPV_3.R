@@ -28,58 +28,65 @@ source(paste(RScriptPath, "/DailyPred_GP_ML.R", sep=""))
 
 
 
-StartDate <- "2015-12-01"
-FinishDate <- "2015-12-31"
+Options <- read.csv(paste(DataPath, "/OptionsTest.csv", sep=""), header = T)
+
 
 ############################## Load ExceptionalDatesOpeningHours Data in the same format as AZure ML
 
 ExceptionalDatesOpeningHours <- tryCatch( # catach errors at the inputs: ExceptionalDates and Openinghours
   {
     ExceptionalDates <- read.csv(paste(DataPath, "/ExceptionalDatesTest.csv", sep="") ,header = T) # class: data.frame
+    ExceptionalDates$ExceptionalDayTypeID <- as.integer(ExceptionalDates$ExceptionalDayTypeID) # Fix data type
     openingHours2 <- read.csv(paste(DataPath, "/openingHoursTest.csv", sep=""),header = T)
     
-    openingHours222 <- data.frame(Dates = as.Date(as.POSIXct(openingHours2$OpenFrom, origin = "1970-01-01", tz="GMT")),
+    openingHours222 <- data.frame(LocationID.H = openingHours2$LocationID,
+                                  Dates = as.Date(as.POSIXct(openingHours2$OpenFrom, origin = "1970-01-01", tz="GMT")),
                                   OpenFrom =  format(as.POSIXct(openingHours2$OpenFrom, origin = "1970-01-01", tz="GMT"), "%H:%M:%S"),
-                                  OpenTo = format(as.POSIXct(openingHours2$OpenTo, origin = "1970-01-01", tz="GMT"), "%H:%M:%S"))
+                                  OpenTo =  format(as.POSIXct(openingHours2$OpenTo, origin = "1970-01-01", tz="GMT"), "%H:%M:%S"))
     
-    StartFinishDate <- data.frame(StartDate, FinishDate)
-    write.csv(StartFinishDate, file = paste(DataPath, "/StartFinishDateTest.csv", sep=""), row.names = F)
-    ExceptionalDatesOpeningHours <-   rbind.fill(ExceptionalDates, openingHours222)
+     ExceptionalDatesOpeningHours <-   rbind.fill(ExceptionalDates, openingHours222)
     
   },
   
   error = function(cond){ # all other errors would be caught and gives no output
-    print("Errors  occur at ExceptionalDates or Opening Hours")
-    ExceptionalDatesOpeningHours <- data.frame(ExceptionalDate = NA, Annual = NA,
+    print("Errors  occur at ExceptionalDates or Opening hours")
+    ExceptionalDatesOpeningHours <- data.frame(LocationID = NA, ExceptionalDate = NA, Annual = NA,
                                                ForecastIgnoreHistory = NA, ForecastDateSpecific = NA,
-                                               ExceptionalDayTypeID = NA, Dates = NA, OpenFrom = NA, OpenTo = NA)
+                                               ExceptionalDayTypeID = NA, LocationID.H = NA, 
+                                               Dates = NA, OpenFrom = NA, OpenTo = NA)
     return(ExceptionalDatesOpeningHours)
   }
 )
 
-
+print("######## check ########")
+print(ExceptionalDatesOpeningHours)
 
 
 ############################## Load Startand Finish Data in the same format as AZure ML
 OtherInfor <- tryCatch(
   {
-    OtherInfor <-  rbind.fill(StartFinishDate, ExceptionalDatesOpeningHours)
+    OtherInfor <-  rbind.fill(Options, ExceptionalDatesOpeningHours)
     
   },
   error = function(cond){
     print("If ExceptionalDatesOpening Hours is correct, error is at Start and Finish Date")
-    OtherInfor <- data.frame(StartDate = NA, FinishDate = NA, ExceptionalDate = NA, Annual = NA,
+    OtherInfor <- data.frame(StartDate = NA, FinishDate = NA, Breakdown = NA, Interval = NA,
+                             LocationID = NA, ExceptionalDate = NA, Annual = NA,
                              ForecastIgnoreHistory = NA, ForecastDateSpecific = NA,
-                             ExceptionalDayTypeID = NA, Dates = NA, OpenFrom = NA, OpenTo = NA)
+                             ExceptionalDayTypeID = NA, LocationID.H = NA, 
+                             Dates = NA, OpenFrom = NA, OpenTo = NA)
     return(OtherInfor)
   }
-  
 )
 
 
 
 
 ###### Main function
+StartDate <- as.character(OtherInfor$StartDate[1])
+FinishDate <-as.character(OtherInfor$FinishDate[1])
+Breakdown <- as.character(OtherInfor$Breakdown[1])
+Interval <- as.character(OtherInfor$Interval[1])
 ##############################################################################################      
 PredictionResults <- tryCatch( # catch all other errors that may occur
   {
