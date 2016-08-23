@@ -87,7 +87,91 @@ StartDate <- as.character(OtherInfor$StartDate[1])
 FinishDate <-as.character(OtherInfor$FinishDate[1])
 Breakdown <- as.character(OtherInfor$Breakdown[1])
 Interval <- as.character(OtherInfor$Interval[1])
+
+
+################################# Segmentation
+##I: format files
+##II: construct unique ID based on SegRequirement
+##III: loop through each segments
+
+salesHistories.temp3 <- read.csv(paste(DataPath, "/salesHistoriesTest.csv", sep=""),
+                                 header = T)
+# covert real NA
+salesHistories.temp2 <- cbind(as.data.frame(sapply(salesHistories.temp3[,c(1:4)], as.integer)),
+                              salesHistories.temp3[,c(5,6)])
+# remove NA rows 
+salesHistories.temp <- salesHistories.temp2[which(rowSums(is.na(as.matrix(salesHistories.temp2[, which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)])))==0),]
+
+
 ##############################################################################################      
+if (nrow(salesHistories.temp) == 0){
+  ErrMsg <- "Invalid breakdown requriements cause empty historical data."
+  print(ErrMsg)
+  PredictionAllResults <- data.frame(LocationID = NA,
+                                     DepartmentID = NA,
+                                     JobRoleID = NA,
+                                     SkillID = NA,
+                                     Time = "9999-01-01", Items = ErrMsg, 
+                                     stringsAsFactors=FALSE)
+}else{
+  # findout the max digits
+  DigitNo <- max(max(nchar(salesHistories.temp[which(!is.na(salesHistories.temp[,1])),  1])), 
+                 max(nchar(salesHistories.temp[which(!is.na(salesHistories.temp[,2])),  2])),
+                 max(nchar(salesHistories.temp[which(!is.na(salesHistories.temp[,3])),  3])),
+                 max(nchar(salesHistories.temp[which(!is.na(salesHistories.temp[,4])),  4])))
+  
+  for (i in 1:4){
+    salesHistories.temp[,i] <- sprintf(paste("%0",DigitNo,"d",sep=""), salesHistories.temp[,i])
+  }
+  
+  salesHistoriesID <- data.frame(ID = as.character(interaction(salesHistories.temp[,which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)], sep=""))
+                                 ,FinishTime =salesHistories.temp$FinishTime
+                                 ,ValueItem=salesHistories.temp$ValueItem
+                                 ,stringsAsFactors=FALSE)
+  
+  
+  ## prepare other information
+  ExceptionalDatesCSV.temp <- OtherInfor[c(!is.na(OtherInfor$LocationID)), c(5:10)]
+  ExceptionalDatesCSV.temp$ExceptionalDate <- format(as.POSIXct(ExceptionalDatesCSV.temp$ExceptionalDate, origin = "1970-01-01", tz="GMT"), "%Y-%m-%d");
+  
+  OpenDayResults.temp <- OtherInfor[c(!is.na(OtherInfor$LocationID.H)), c(11:14)]
+  OpenDayResults.temp$Dates <- as.Date(OpenDayResults.temp$Dates)
+  colnames(OpenDayResults.temp)[1] <- "LocationID"
+  
+  
+  print("####### Check-2 ###########")
+  print(head(salesHistoriesID, n =5))
+  print(head(ExceptionalDatesCSV.temp, n =5))
+  print(head(OpenDayResults.temp, n =5))
+  
+  ## start segmentation and prediction
+  PredictionAllResults <- data.frame(LocationID = character(), DepartmentID = character(),
+                                     JobRoleID = character(), SkillID = character(),
+                                     Time = character(), Items = character(), 
+                                     stringsAsFactors=FALSE)
+  UniqueID <- as.character(unique(salesHistoriesID$ID))
+  for (m in 1:length(UniqueID)){
+    id <- UniqueID[m]
+    
+    FullIDs <- rep("000",4) # Full ID of [LocationaID, DepartmentID, JobRoleID, SkillID]
+    FullIDs[which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)]<-
+      substring(id, seq(1, nchar(id)-1, DigitNo), seq(DigitNo, nchar(id), DigitNo))
+    FullIDs <- as.character(as.numeric(FullIDs))
+    
+    salesHistories <- salesHistoriesID[which(salesHistoriesID$ID == id), c(2,3)]
+    ExceptionalDatesCSV <- ExceptionalDatesCSV.temp[which(ExceptionalDatesCSV.temp$LocationID == as.integer(substr(id, 1, DigitNo))),
+                                                    c(-1)]
+    OpenDayResults <- OpenDayResults.temp[which(OpenDayResults.temp$LocationID == as.integer(substr(id, 1, DigitNo))),
+                                          c(-1)]
+    
+    
+    
+    print("####### Check-3 ###########")  
+    print(head(salesHistories, n =5))                                 
+    print(head(ExceptionalDatesCSV, n =5))
+    print(head(OpenDayResults, n =5))
+
+
 PredictionResults <- tryCatch( # catch all other errors that may occur
   {
     salesHistories <- read.csv(paste(DataPath, "/salesHistoriesTest.csv", sep=""),header = T)
