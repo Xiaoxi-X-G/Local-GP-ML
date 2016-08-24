@@ -213,7 +213,7 @@ DailyPred_GP_ML<-function(FinishDate.T, StartDate.T, InputData, ExceptionalDayan
   Ind <- which(Daypred$SpecialDays)
   if (length(Ind)>0){
     for (i in 1:length(Ind)){
-      if ((Daypred$SD.Annual[Ind[i]]) & (nrow(Daypred)>365) ){ 
+      if ((Daypred$SD.Annual[Ind[i]]) & (as.integer(Daypred$Dates[Ind[i]] - CleanedData$Dates[1])>365) ){ 
         #Deal with annually repeated special days
         Dates<-Daypred$Dates[Ind[i]]
         
@@ -237,7 +237,7 @@ DailyPred_GP_ML<-function(FinishDate.T, StartDate.T, InputData, ExceptionalDayan
         ExceptionalDayCoeff<-ExponentialCoeff(length(Hist.Dates), 0.65)
         
         # 3: Replace exceptinal days with history
-        Daypred$Rev2_Boxcox[Ind[i]]<-sum(ExceptionalDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_Boxcox[which(CleanedData$Dates %in% Hist.Dates)]))
+        Daypred$Rev2_Boxcox[Ind[i]]<-sum(ExceptionalDayCoeff*(CleanedData$X_coeff[which(CleanedData$Dates %in% Hist.Dates)]*CleanedData$Values_BoxCox[which(CleanedData$Dates %in% Hist.Dates)]))
       }
     }
   }
