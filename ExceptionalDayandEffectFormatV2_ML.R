@@ -103,7 +103,7 @@ ExceptionalDayandEffectFormatV2_ML<-function(ExceptionalDatesCSV, FirstDate, Fin
     
     for (i in 1:nrow(ExceptionalDays2)){
       if ((!(as.character(ExceptionalDays2$ExceptionalDate[i]+1) %in% as.character(ExceptionalDays2$ExceptionalDate)))
-          &&(!(as.character(ExceptionalDays2$ExceptionalDate[i]+1) %in% as.character(ProximityDays$Dates) )) ){
+          &(!(as.character(ExceptionalDays2$ExceptionalDate[i]+1) %in% as.character(ProximityDays$Dates) )) ){
         ProximityDays$Dates[nrow(ProximityDays)-i+1] <- ExceptionalDays2$ExceptionalDate[i]+1
         ProximityDays$Annual[nrow(ProximityDays)-i+1] <- ExceptionalDays2$Annual[i]
         ProximityDays$ProximityDaysTypeID[nrow(ProximityDays)-i+1] <- paste(as.character(ExceptionalDays2$ExceptionalDayTypeID[i]), "+", sep="")
