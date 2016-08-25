@@ -9,7 +9,7 @@ ExponentialCoeff<-function(lg, Weights){
     return(1)
 
   }else{
-    if (Weights>=1 || Weights <0 ){
+    if (Weights>=1 | Weights <0 ){
       stop("Weights has to be in [0 1)")
     }
     

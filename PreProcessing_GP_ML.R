@@ -81,7 +81,7 @@ PreProcessing_GP_ML <- function(InputData, ExceptionalDayandEffects, CloseDays, 
   Ind<-which(is.na(OutputData$Values))
   if (length(Ind)>0){
     for (i in 1:length(Ind)){
-      if (is.na(OutputData$Values[Ind[i]])&&(OutputData$SpecialDays[Ind[i]] ||OutputData$CloseDays[Ind[i]]) ){
+      if (is.na(OutputData$Values[Ind[i]])&(OutputData$SpecialDays[Ind[i]] | OutputData$CloseDays[Ind[i]]) ){
         OutputData$Values[Ind[i]] <-0 #not data at a special day or close date, indicate 0 
       }else{ # average of same day of week
         WkInd.temp <- OutputData$DayofWk[Ind[i]]
@@ -91,7 +91,7 @@ PreProcessing_GP_ML <- function(InputData, ExceptionalDayandEffects, CloseDays, 
   }
   
   # need to add trycatch later
-  if(length(which(is.nan(OutputData$Values)|| is.na(OutputData$Values))) > 0) {stop("need to ck")}
+  if(length(which(is.nan(OutputData$Values)| is.na(OutputData$Values))) > 0) {stop("need to ck")}
   
   #}
   
@@ -125,7 +125,7 @@ PreProcessing_GP_ML <- function(InputData, ExceptionalDayandEffects, CloseDays, 
   
   
   ####
-  if ((length(outliers)>0) || (length(which(OutputData$SpecialDays)) >0) ||(length(which(OutputData$ProximityDays)) >0) ){
+  if ((length(outliers)>0) | (length(which(OutputData$SpecialDays)) >0) |(length(which(OutputData$ProximityDays)) >0) ){
     Ind <-c()
     Ind<- sort(unique(c(which(OutputData$SpecialDays), which(OutputData$Outliers), which(OutputData$ProximityDays))))
     for (j in 1:length(Ind)){
