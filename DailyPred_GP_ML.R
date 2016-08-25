@@ -95,7 +95,7 @@ DailyPred_GP_ML<-function(FinishDate.T, StartDate.T, InputData, ExceptionalDayan
                                  x3=lag(data.temp, k=3), x4 = lag(data.temp, k=4),
                                  x5=lag(data.temp, k=5), x6 = lag(data.temp, k=6),
                                  x7=lag(data.temp, k=7))
-        nnetModel2Use <- nnet(form.in, dataIn2Use, size = 15, decay= 0.1, maxit = 5000, linout = TRUE)
+        nnetModel2Use <- nnet(form.in, dataIn2Use, size = 15, decay= 0.1, maxit = 5000, linout = TRUE, trace = FALSE)
         
         dat.pred2Use <-as.vector(c(0, tail(data.temp, n=7)))
         names(dat.pred2Use) <-c("Y1", "x1","x2","x3","x4","x5","x6","x7")
