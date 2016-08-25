@@ -30,8 +30,8 @@ ExceptionalDayandEffectFormatV2_ML<-function(ExceptionalDatesCSV, FirstDate, Fin
   ###### Deal with duplicated FALSE and TRUE at Annual: delete FALSE row if same day Annual is TRUE
   FalseAnnulInd <- which(! ExceptionalDays$Annual)
   TrueAnnulInd <- which(ExceptionalDays$Annual)
-  print(FalseAnnulInd)
-  print(TrueAnnulInd)
+  # print(FalseAnnulInd)
+  # print(TrueAnnulInd)
   
   if (length(FalseAnnulInd)>0){
     DeleteInd <-c()
