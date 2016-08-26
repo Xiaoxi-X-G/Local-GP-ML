@@ -6,8 +6,8 @@ DataHoursV2_ML <-function(AllData, col, FirstDate, FinishDateT){
   
   
   ## Change the Azure ML epoch format to DayTime
-  HourlySale <- aggregate(VendData.stor.temp0$Transactions,
-                          list(hour=cut(as.POSIXct(VendData.stor.temp0$FinishTime, origin = "1970-01-01", tz="GMT"),"hour")),sum)
+  HourlySale <- aggregate(AllData[, col],
+                          list(hour=cut(as.POSIXct(AllData[, 1], origin = "1970-01-01", tz="GMT"),"hour")),sum)
   HourlySale.arry <- array(HourlySale$x, dim = nrow(HourlySale), dimnames = list(as.character(HourlySale$hour)))  
   
   hrs <- c("00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", 
