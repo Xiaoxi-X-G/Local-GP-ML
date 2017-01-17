@@ -152,10 +152,17 @@ if (nrow(salesHistories.temp) == 0){
   for (m in 1:length(UniqueID)){
     id <- UniqueID[m]
     
-    FullIDs <- rep("000",4) # Full ID of [LocationaID, DepartmentID, JobRoleID, SkillID]
-    FullIDs[which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)]<-
-      substring(id, seq(1, nchar(id)-1, DigitNo), seq(DigitNo, nchar(id), DigitNo))
-    FullIDs <- as.character(as.numeric(FullIDs))
+    FullIDs <- rep(paste(rep('0', DigitNo)  , collapse =""),4) # Full ID of [LocationaID, DepartmentID, JobRoleID, SkillID]
+    
+    if (DigitNo == 1){
+      FullIDs[which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)] <- 
+        strsplit(id,'')[[1]]
+    }else{
+      FullIDs[which(as.integer(strsplit(as.character(Breakdown),"")[[1]])==1)]<-
+        substring(id, seq(1, nchar(id)-1, DigitNo), seq(DigitNo, nchar(id), DigitNo))
+      FullIDs <- as.character(as.numeric(FullIDs))
+    }
+    
     
     salesHistories <- salesHistoriesID[which(salesHistoriesID$ID == id), c(2,3)]
     ExceptionalDatesCSV <- ExceptionalDatesCSV.temp[which(ExceptionalDatesCSV.temp$LocationID == as.integer(substr(id, 1, DigitNo))),
