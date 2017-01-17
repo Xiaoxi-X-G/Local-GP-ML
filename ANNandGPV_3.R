@@ -375,7 +375,7 @@ CkTime <- proc.time() - ptm
 ###
 Dailys <- XXX[[6]]
 plot(c(Dailys$Values_Scale01, rep(0, length=nrow(YYYY))), type="o", col="blue")
-lines(c(rep(0,length=nrow(Dailys)), YYYY$Preds), type="o", col="red")
+lines(c(rep(0,length=nrow(Dailys)), YYYY$Pred01), type="o", col="red")
 
 ###
 plot(c(InputData$Values, rep(0, length=nrow(Dailys))), type="o", col="blue")
